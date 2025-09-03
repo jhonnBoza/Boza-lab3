@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <div style="font-size: 4rem;">{{ profile.avatar }}</div>
+                <h4>{{ user.get_full_name|default:user.username }}</h4>
+                <p class="text-muted">@{{ user.username }}</p>
+                <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary">Edit Profile</a>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>📊 Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h3 class="text-primary">{{ profile.exams_taken }}</h3>
+                        <small class="text-muted">Exams Taken</small>
+                    </div>
+                    <div class="col-6">
+                        <h3 class="text-success">{{ profile.total_score }}</h3>
+                        <small class="text-muted">Total Score</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>🏆 Recent Exam Results</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_attempts %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Exam</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in recent_attempts %}
+                                <tr>
+                                    <td>{{ attempt.exam.title }}</td>
+                                    <td>{{ attempt.score }}/{{ attempt.total_questions }}</td>
+                                    <td>
+                                        <span class="badge {% if attempt.percentage >= 70 %}bg-success{% elif attempt.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ attempt.percentage|floatformat:1 }}%
+                                        </span>
+                                    </td>
+                                    <td>{{ attempt.completed_at|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center">
+                        <div style="font-size: 3rem;">📝</div>
+                        <p class="text-muted">No exam attempts yet.</p>
+                        <a href="{% url 'exam_list' %}" class="btn btn-primary">Take your first exam!</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5>ℹ️ About</h5>
+            </div>
+            <div class="card-body">
+                {% if profile.bio %}
+                    <p>{{ profile.bio }}</p>
+                {% else %}
+                    <p class="text-muted">No bio available. <a href="{% url 'edit_profile' %}">Add one!</a></p>
+                {% endif %}
+                
+                {% if profile.birth_date %}
+                    <p><strong>Birth Date:</strong> {{ profile.birth_date|date:"F d, Y" }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

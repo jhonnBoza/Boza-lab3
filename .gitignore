@@ -1,0 +1,16 @@
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Archivos de configuración local
+.Python
+db.sqlite3
+
+# Entornos virtuales
+.env
+venv/
+
+# Configuración de VS Code
+.vscode/
